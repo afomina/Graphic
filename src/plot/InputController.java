@@ -34,7 +34,9 @@ class InputController implements ActionListener {
 			inv = (Invocable) engine;
 
 			action();
-		} catch (ScriptException | NoSuchMethodException e) {
+		} catch (ScriptException) {
+			showErrorMessage();
+		} catch (NoSuchMethodException e) {
 			showErrorMessage();
 		}
 	}
@@ -63,7 +65,7 @@ class InputController implements ActionListener {
 			ScriptException {
 		double arg = ((double) (x - PlotView.START_X)) / PlotView.zoom;
 
-		double funcValue = (double) inv.invokeFunction("func", arg);
+		double funcValue = (Double) inv.invokeFunction("func", arg);
 		int result = PlotView.START_Y - (int) (funcValue * PlotView.zoom);
 
 		return result;
