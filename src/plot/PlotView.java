@@ -74,6 +74,7 @@ public class PlotView extends JPanel {
 
 	public void clear() {
 		getGraphics().clearRect(0, 0, PLOT_WIDTH, PLOT_HEIGHT);
+		zoom = START_ZOOM;
 		drawCoordinateSystem(getGraphics());
 	}
 
