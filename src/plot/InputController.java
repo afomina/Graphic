@@ -34,7 +34,7 @@ class InputController implements ActionListener {
 			inv = (Invocable) engine;
 
 			action();
-		} catch (ScriptException) {
+		} catch (ScriptException e) {
 			showErrorMessage();
 		} catch (NoSuchMethodException e) {
 			showErrorMessage();
