@@ -4,9 +4,15 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 public class Model {
 
@@ -50,8 +56,8 @@ public class Model {
 			}
 		});
 
-		JButton zoomIn = new JButton("+");
-		zoomIn.addActionListener(new ActionListener() {
+		JButton zoomInBut = new JButton("+");
+		zoomInBut.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -59,10 +65,10 @@ public class Model {
 
 			}
 		});
-		zoomIn.setMnemonic(KeyEvent.VK_ADD);
+		zoomInBut.setMnemonic(KeyEvent.VK_ADD);
 
-		JButton zoomOut = new JButton("-");
-		zoomOut.addActionListener(new ActionListener() {
+		JButton zoomOutBut = new JButton("-");
+		zoomOutBut.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -70,15 +76,75 @@ public class Model {
 
 			}
 		});
-		zoomOut.setMnemonic(KeyEvent.VK_SUBTRACT);
+		zoomOutBut.setMnemonic(KeyEvent.VK_SUBTRACT);
+
+		JButton rightShiftBut = new JButton(">");
+		rightShiftBut.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				plot.rightShift();
+			}
+		});
+
+		JButton leftShiftBut = new JButton("<");
+		leftShiftBut.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				plot.leftShift();
+			}
+		});
+
+		JButton upShiftBut = new JButton("/\\");
+		upShiftBut.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				plot.upShift();
+			}
+		});
+
+		JButton downShiftBut = new JButton("\\/");
+		downShiftBut.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				plot.downShift();
+			}
+		});
+
+		JScrollPane plotScroll = new JScrollPane(plot,
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		plotScroll.getHorizontalScrollBar().addAdjustmentListener(
+				new AdjustmentListener() {
+
+					@Override
+					public void adjustmentValueChanged(AdjustmentEvent event) {
+						int type = event.getAdjustmentType();
+
+						if (type == AdjustmentEvent.UNIT_INCREMENT
+								|| type == AdjustmentEvent.BLOCK_INCREMENT) {
+							plot.rightShift();
+						} else {
+							plot.leftShift();
+						}
+					}
+				});
 
 		mainFrame.add(label);
 		mainFrame.add(function);
+		// mainFrame.add(plotScroll);
 		mainFrame.add(plot);
 		mainFrame.add(clearButton);
 		mainFrame.add(closeButton);
-		mainFrame.add(zoomIn);
-		mainFrame.add(zoomOut);
+		mainFrame.add(zoomInBut);
+		mainFrame.add(zoomOutBut);
+		mainFrame.add(leftShiftBut);
+		mainFrame.add(rightShiftBut);
+		mainFrame.add(upShiftBut);
+		mainFrame.add(downShiftBut);
 		mainFrame.setVisible(true);
 	}
 }

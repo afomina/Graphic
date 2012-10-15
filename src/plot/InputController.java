@@ -15,13 +15,15 @@ class InputController implements ActionListener {
 
 	static int leftBound = OFFSET;
 	static int rightBound = PlotView.PLOT_WIDTH - OFFSET;
+	static StringBuilder function = new StringBuilder();
 
-	private static StringBuilder function;
-	private static Invocable inv;
+	static Invocable inv;
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		PlotView.zoom = PlotView.START_ZOOM;
+		PlotView.startX = PlotView.START_X_0;
+		PlotView.startY = PlotView.START_Y_0;
 
 		function = toJavaFunction(Model.function.getText());
 
@@ -36,19 +38,31 @@ class InputController implements ActionListener {
 			action();
 		} catch (ScriptException e) {
 			showErrorMessage();
-		} catch (NoSuchMethodException e) {
-			showErrorMessage();
 		}
 	}
 
-	public static void action() throws NoSuchMethodException, ScriptException {
-		calculatePoints();
+	public static void action() {
+		try {
+			calculatePoints();
+		} catch (NullPointerException e) {
+			InputController.showWarningMessage();
+		} catch (ScriptException e) {
+			InputController.showErrorMessage();
+		} catch (NoSuchMethodException e) {
+			InputController.showErrorMessage();
+		}
+		
 		Model.plot.paint(Model.plot.getGraphics());
 	}
 
 	public static void showErrorMessage() {
 		JOptionPane.showMessageDialog(new JFrame(), "Invalid function "
 				+ function, "Error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	public static void showWarningMessage() {
+		JOptionPane.showMessageDialog(new JFrame(), "Please type any function",
+				"Warning", JOptionPane.WARNING_MESSAGE);
 	}
 
 	static void calculatePoints() throws NoSuchMethodException, ScriptException {
@@ -63,10 +77,10 @@ class InputController implements ActionListener {
 
 	private static int getY(int x) throws NoSuchMethodException,
 			ScriptException {
-		double arg = ((double) (x - PlotView.START_X)) / PlotView.zoom;
+		double arg = ((double) (x - PlotView.startX)) / PlotView.zoom;
 
 		double funcValue = (Double) inv.invokeFunction("func", arg);
-		int result = PlotView.START_Y - (int) (funcValue * PlotView.zoom);
+		int result = PlotView.startY - (int) (funcValue * PlotView.zoom);
 
 		return result;
 	}
