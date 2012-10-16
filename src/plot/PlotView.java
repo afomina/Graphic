@@ -3,7 +3,6 @@ package plot;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-
 import javax.swing.*;
 
 public class PlotView extends JPanel {
@@ -15,8 +14,8 @@ public class PlotView extends JPanel {
 	public static final int SHIFT = 50;
 
 	static double zoom = 40D;
-	static final int PLOT_WIDTH = Model.WIDTH - 50;
-	static final int PLOT_HEIGHT = Model.HEIGHT - 120;
+	final static int PLOT_WIDTH = Model.WIDTH - 70;
+	static final int PLOT_HEIGHT = Model.HEIGHT - 130;
 	static final int START_ZOOM = 40;
 
 	private static final long serialVersionUID = -4235855917686387833L;
@@ -77,10 +76,8 @@ public class PlotView extends JPanel {
 	}
 
 	public void clear() {
-		getGraphics().clearRect(0, 0, PLOT_WIDTH, PLOT_HEIGHT);
-		zoom = START_ZOOM;
-		startX = START_X_0;
-		startY = START_Y_0;
+		init();
+		super.paint(getGraphics());
 
 		drawCoordinateSystem(getGraphics());
 
@@ -102,23 +99,21 @@ public class PlotView extends JPanel {
 		}
 	}
 
-	public void rightShift() {
-		startX += SHIFT;
+	public void horizontalShift(int shift) {
+		startX += shift;
 		InputController.action();
 	}
 
-	public void leftShift() {
-		startX -= SHIFT;
+	public void verticalShift(int shift) {
+		startY -= shift;
 		InputController.action();
 	}
 
-	public void upShift() {
-		startY -= SHIFT;
-		InputController.action();
-	}
-
-	public void downShift() {
-		startY += SHIFT;
-		InputController.action();
+	public void init() {
+		Model.horScrollBar.setValue(Model.scrollStartValue);
+		Model.vertScrollBar.setValue(Model.scrollStartValue);
+		zoom = START_ZOOM;
+		startX = START_X_0;
+		startY = START_Y_0;
 	}
 }

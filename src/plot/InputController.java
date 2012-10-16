@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.script.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -21,9 +20,7 @@ class InputController implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		PlotView.zoom = PlotView.START_ZOOM;
-		PlotView.startX = PlotView.START_X_0;
-		PlotView.startY = PlotView.START_Y_0;
+		Model.plot.init();
 
 		function = toJavaFunction(Model.function.getText());
 
@@ -44,6 +41,7 @@ class InputController implements ActionListener {
 	public static void action() {
 		try {
 			calculatePoints();
+			Model.plot.paint(Model.plot.getGraphics());
 		} catch (NullPointerException e) {
 			InputController.showWarningMessage();
 		} catch (ScriptException e) {
@@ -51,8 +49,7 @@ class InputController implements ActionListener {
 		} catch (NoSuchMethodException e) {
 			InputController.showErrorMessage();
 		}
-		
-		Model.plot.paint(Model.plot.getGraphics());
+
 	}
 
 	public static void showErrorMessage() {
@@ -108,13 +105,13 @@ class InputController implements ActionListener {
 						.replaceAll("(?<!\\pL)(?=\\pL)sqrt(?<=\\pL)(?!\\pL)",
 								"Math.sqrt"));
 
-		Pattern p = Pattern.compile("\\(([^()]+)\\)\\^([\\w\\.]+)");
+		Pattern p = Pattern.compile("\\(([^()]+)\\)\\^([\\w\\.()]+)");
 		result = replacePow(p, result);
 
-		p = Pattern.compile("(\\([^()]*\\([^()]+\\)[^()]*\\))\\^([\\w\\.]+)");
+		p = Pattern.compile("(\\([^()]*\\([^()]+\\)[^()]*\\))\\^([\\w\\.()]+)");
 		result = replacePow(p, result);
 
-		p = Pattern.compile("([\\w\\.]+)\\^([\\w\\.]+)");
+		p = Pattern.compile("([\\w\\.]+)\\^([\\w\\.()]+)");
 		result = replacePow(p, result);
 
 		return result;
